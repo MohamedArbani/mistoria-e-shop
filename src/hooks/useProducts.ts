@@ -1,0 +1,92 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { mapDbProduct, type Product } from '@/types/product';
+
+export function useProducts() {
+  return useQuery({
+    queryKey: ['products'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('products').select('*').order('created_at', { ascending: false });
+      if (error) throw error;
+      return (data || []).map(mapDbProduct);
+    },
+  });
+}
+
+export function useProduct(id: string) {
+  return useQuery({
+    queryKey: ['product', id],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('products').select('*').eq('id', id).single();
+      if (error) throw error;
+      return mapDbProduct(data);
+    },
+    enabled: !!id,
+  });
+}
+
+export function useCreateProduct() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (product: Omit<Product, 'id'>) => {
+      const { data, error } = await supabase.from('products').insert({
+        name: product.name,
+        category: product.category,
+        price: product.price,
+        image: product.image,
+        description: product.description,
+        long_description: product.longDescription,
+        notes_top: product.notes.top,
+        notes_middle: product.notes.middle,
+        notes_base: product.notes.base,
+        longevity: product.longevity,
+        projection: product.projection,
+        occasions: product.occasions,
+        volumes: product.volumes as any,
+        is_new: product.new,
+        is_bestseller: product.bestseller,
+      }).select().single();
+      if (error) throw error;
+      return mapDbProduct(data);
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['products'] }),
+  });
+}
+
+export function useUpdateProduct() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (product: Product) => {
+      const { error } = await supabase.from('products').update({
+        name: product.name,
+        category: product.category,
+        price: product.price,
+        image: product.image,
+        description: product.description,
+        long_description: product.longDescription,
+        notes_top: product.notes.top,
+        notes_middle: product.notes.middle,
+        notes_base: product.notes.base,
+        longevity: product.longevity,
+        projection: product.projection,
+        occasions: product.occasions,
+        volumes: product.volumes as any,
+        is_new: product.new,
+        is_bestseller: product.bestseller,
+      }).eq('id', product.id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['products'] }),
+  });
+}
+
+export function useDeleteProduct() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('products').delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['products'] }),
+  });
+}
