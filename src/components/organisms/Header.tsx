@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingBag, Menu, X, User } from 'lucide-react';
+import { ShoppingBag, Menu, X, User, Search } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from '@/components/atoms/Logo';
 import { ThemeToggle } from '@/components/atoms/ThemeToggle';
 import { useCart } from '@/contexts/CartContext';
@@ -9,8 +10,8 @@ import { cn } from '@/lib/utils';
 
 const navLinks = [
   { to: '/', label: 'Home' },
-  { to: '/collections', label: 'Collections' },
-  { to: '/about', label: 'About' },
+  { to: '/collections', label: 'Signature Collection' },
+  { to: '/about', label: 'About Us' },
   { to: '/contact', label: 'Contact' },
   { to: '/faq', label: 'FAQ' },
 ];
@@ -21,32 +22,35 @@ export function Header() {
   const location = useLocation();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-border/50 bg-background/60 backdrop-blur-xl">
       <div className="container flex h-16 items-center justify-between">
-        {/* Mobile menu toggle */}
         <button className="md:hidden" onClick={() => setMobileOpen(!mobileOpen)} aria-label="Menu">
           {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
 
         <Logo />
 
-        {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-8">
           {navLinks.map(link => (
             <Link
               key={link.to}
               to={link.to}
               className={cn(
-                'text-sm font-body tracking-wider uppercase transition-colors hover:text-primary',
+                'text-sm font-body tracking-wider uppercase transition-colors hover:text-primary relative',
                 location.pathname === link.to ? 'text-primary' : 'text-muted-foreground'
               )}
             >
               {link.label}
+              {location.pathname === link.to && (
+                <motion.span
+                  layoutId="nav-underline"
+                  className="absolute -bottom-1 left-0 right-0 h-px bg-primary"
+                />
+              )}
             </Link>
           ))}
         </nav>
 
-        {/* Actions */}
         <div className="flex items-center gap-1">
           <ThemeToggle />
           <Link to="/admin">
@@ -66,23 +70,32 @@ export function Header() {
       </div>
 
       {/* Mobile nav */}
-      {mobileOpen && (
-        <nav className="md:hidden border-t border-border bg-background px-4 py-4 space-y-3">
-          {navLinks.map(link => (
-            <Link
-              key={link.to}
-              to={link.to}
-              onClick={() => setMobileOpen(false)}
-              className={cn(
-                'block text-sm font-body tracking-wider uppercase py-2',
-                location.pathname === link.to ? 'text-primary' : 'text-muted-foreground'
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-      )}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.nav
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden border-t border-border/50 bg-background/95 backdrop-blur-xl overflow-hidden"
+          >
+            <div className="px-4 py-4 space-y-1">
+              {navLinks.map(link => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  onClick={() => setMobileOpen(false)}
+                  className={cn(
+                    'block text-sm font-body tracking-wider uppercase py-3 px-2 rounded-lg transition-colors',
+                    location.pathname === link.to ? 'text-primary bg-primary/5' : 'text-muted-foreground hover:text-foreground'
+                  )}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </motion.nav>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShoppingBag } from 'lucide-react';
+import { ShoppingBag, Heart } from 'lucide-react';
 import type { Product } from '@/types/product';
 import { CategoryBadge } from '@/components/atoms/CategoryBadge';
 import { VolumeBonusBadge } from '@/components/atoms/VolumeBonusBadge';
@@ -37,10 +37,11 @@ export function ProductCard({ product }: ProductCardProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
+      whileHover={{ y: -4 }}
     >
       <Link to={`/product/${product.id}`} className="group block">
         <div className={cn(
-          'relative aspect-[3/4] overflow-hidden rounded-lg bg-muted',
+          'relative aspect-[3/4] overflow-hidden rounded-xl bg-muted',
           !product.available && 'opacity-70',
         )}>
           {product.image ? (
@@ -49,7 +50,7 @@ export function ProductCard({ product }: ProductCardProps) {
               alt={product.name}
               loading="lazy"
               className={cn(
-                'h-full w-full object-cover transition-transform duration-700 group-hover:scale-105',
+                'h-full w-full object-cover transition-transform duration-700 group-hover:scale-110',
                 !product.available && 'grayscale',
               )}
             />
@@ -58,7 +59,9 @@ export function ProductCard({ product }: ProductCardProps) {
               No Image
             </div>
           )}
-          <div className="absolute inset-0 bg-foreground/0 transition-colors group-hover:bg-foreground/10" />
+          
+          {/* Hover overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
           {/* Out of stock overlay */}
           {!product.available && (
@@ -67,21 +70,30 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
           )}
 
-          {/* Badges */}
+          {/* Badges top-left */}
           <div className="absolute left-3 top-3 flex gap-1">
             {product.new && (
-              <Badge className="bg-primary text-primary-foreground border-0 text-xs">NEW</Badge>
+              <Badge className="bg-primary text-primary-foreground border-0 text-xs font-body">NEW</Badge>
             )}
             {product.bestseller && (
-              <Badge className="bg-secondary text-secondary-foreground border-0 text-xs">BESTSELLER</Badge>
+              <Badge className="bg-secondary text-secondary-foreground border-0 text-xs font-body">BESTSELLER</Badge>
             )}
           </div>
 
-          {/* Quick add — hidden when out of stock */}
+          {/* Heart icon top-right */}
+          <button
+            className="absolute top-3 right-3 rounded-full bg-background/80 backdrop-blur-sm p-2 text-muted-foreground opacity-0 group-hover:opacity-100 transition-all hover:text-primary"
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+            aria-label="Add to wishlist"
+          >
+            <Heart className="h-4 w-4" />
+          </button>
+
+          {/* Quick add button */}
           {product.available && (
             <button
               onClick={handleQuickAdd}
-              className="absolute bottom-3 right-3 rounded-full bg-background/90 p-2.5 text-foreground opacity-0 shadow-lg backdrop-blur-sm transition-all group-hover:opacity-100 hover:bg-primary hover:text-primary-foreground"
+              className="absolute bottom-3 right-3 rounded-full bg-primary p-3 text-primary-foreground opacity-0 shadow-lg transition-all group-hover:opacity-100 hover:scale-110"
               aria-label="Quick add to cart"
             >
               <ShoppingBag className="h-4 w-4" />
@@ -89,10 +101,10 @@ export function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        <div className="mt-3 space-y-1">
+        <div className="mt-4 space-y-1.5">
           <CategoryBadge category={product.category} />
           <h3 className="font-heading text-lg font-medium text-foreground">{product.name}</h3>
-          <p className="text-sm text-muted-foreground line-clamp-1">{product.description}</p>
+          <p className="text-sm text-muted-foreground line-clamp-1 font-body">{product.description}</p>
           <p className="font-heading text-lg font-semibold text-primary">
             {volumes.length > 1 && <span className="text-xs text-muted-foreground font-body mr-1">from</span>}
             {formatPrice(displayPrice)}
