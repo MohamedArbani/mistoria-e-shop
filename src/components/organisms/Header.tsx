@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingBag, Menu, X, User, Search } from 'lucide-react';
+import { ShoppingBag, Menu, X, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from '@/components/atoms/Logo';
 import { ThemeToggle } from '@/components/atoms/ThemeToggle';
