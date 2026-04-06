@@ -21,6 +21,7 @@ export type Database = {
           description: string | null
           id: string
           image: string | null
+          is_available: boolean
           is_bestseller: boolean | null
           is_new: boolean | null
           long_description: string | null
@@ -33,6 +34,7 @@ export type Database = {
           price: number
           projection: string | null
           updated_at: string | null
+          volume_bonus: Json | null
           volumes: Json | null
         }
         Insert: {
@@ -41,6 +43,7 @@ export type Database = {
           description?: string | null
           id?: string
           image?: string | null
+          is_available?: boolean
           is_bestseller?: boolean | null
           is_new?: boolean | null
           long_description?: string | null
@@ -53,6 +56,7 @@ export type Database = {
           price: number
           projection?: string | null
           updated_at?: string | null
+          volume_bonus?: Json | null
           volumes?: Json | null
         }
         Update: {
@@ -61,6 +65,7 @@ export type Database = {
           description?: string | null
           id?: string
           image?: string | null
+          is_available?: boolean
           is_bestseller?: boolean | null
           is_new?: boolean | null
           long_description?: string | null
@@ -73,6 +78,7 @@ export type Database = {
           price?: number
           projection?: string | null
           updated_at?: string | null
+          volume_bonus?: Json | null
           volumes?: Json | null
         }
         Relationships: []

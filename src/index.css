@@ -16,8 +16,8 @@
     --secondary-foreground: 30 10% 20%;
     --muted: 36 15% 92%;
     --muted-foreground: 30 8% 46%;
-    --accent: 0 0% 96%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 36 15% 88%;
+    --accent-foreground: 30 10% 12%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     --border: 36 20% 87%;
@@ -32,40 +32,44 @@
     --sidebar-accent-foreground: 30 10% 20%;
     --sidebar-border: 36 20% 87%;
     --sidebar-ring: 43 52% 54%;
+    --section-alt: 40 25% 94%;
     --font-heading: 'Playfair Display', serif;
     --font-body: 'Lato', sans-serif;
     --gold-gradient: linear-gradient(135deg, hsl(43, 52%, 54%), hsl(36, 60%, 65%));
+    --gold-glow: 0 0 30px hsla(43, 52%, 54%, 0.15);
     --hero-overlay: linear-gradient(180deg, hsla(0, 0%, 0%, 0.4) 0%, hsla(0, 0%, 0%, 0.7) 100%);
   }
 
   .dark {
-    --background: 0 0% 4%;
+    --background: 0 0% 3%;
     --foreground: 36 33% 93%;
-    --card: 0 0% 7%;
+    --card: 0 0% 6%;
     --card-foreground: 36 33% 93%;
-    --popover: 0 0% 7%;
+    --popover: 0 0% 6%;
     --popover-foreground: 36 33% 93%;
     --primary: 43 52% 54%;
-    --primary-foreground: 0 0% 4%;
-    --secondary: 0 0% 12%;
+    --primary-foreground: 0 0% 3%;
+    --secondary: 0 0% 10%;
     --secondary-foreground: 36 33% 90%;
-    --muted: 0 0% 14%;
-    --muted-foreground: 36 10% 60%;
-    --accent: 0 0% 15%;
-    --accent-foreground: 0 0% 100%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 36 10% 55%;
+    --accent: 0 0% 10%;
+    --accent-foreground: 36 33% 93%;
     --destructive: 0 100% 50%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 16%;
-    --input: 0 0% 16%;
+    --border: 43 15% 15%;
+    --input: 0 0% 14%;
     --ring: 43 52% 54%;
-    --sidebar-background: 0 0% 6%;
+    --sidebar-background: 0 0% 5%;
     --sidebar-foreground: 36 33% 90%;
     --sidebar-primary: 43 52% 54%;
-    --sidebar-primary-foreground: 0 0% 4%;
-    --sidebar-accent: 0 0% 12%;
+    --sidebar-primary-foreground: 0 0% 3%;
+    --sidebar-accent: 0 0% 10%;
     --sidebar-accent-foreground: 36 33% 90%;
-    --sidebar-border: 0 0% 16%;
+    --sidebar-border: 43 15% 15%;
     --sidebar-ring: 43 52% 54%;
+    --section-alt: 0 0% 5%;
+    --gold-glow: 0 0 40px hsla(43, 52%, 54%, 0.12);
     --hero-overlay: linear-gradient(180deg, hsla(0, 0%, 0%, 0.5) 0%, hsla(0, 0%, 0%, 0.85) 100%);
   }
 }
@@ -100,5 +104,11 @@
   }
   .hero-overlay {
     background: var(--hero-overlay);
+  }
+  .gold-glow {
+    box-shadow: var(--gold-glow);
+  }
+  .section-alt {
+    background-color: hsl(var(--section-alt));
   }
 }

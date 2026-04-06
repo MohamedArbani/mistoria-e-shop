@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import type { Json } from '@/integrations/supabase/types';
 import { mapDbProduct, type Product, type ProductCategory } from '@/types/product';
 
 export function useProducts() {
@@ -79,7 +80,7 @@ export function useCreateProduct() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (product: Omit<Product, 'id'>) => {
-      const { data, error } = await supabase.from('products').insert({
+      const { data, error } = await supabase.from('products').insert([{
         name: product.name,
         category: product.category,
         price: product.price,
@@ -92,12 +93,12 @@ export function useCreateProduct() {
         longevity: product.longevity,
         projection: product.projection,
         occasions: product.occasions,
-        volumes: product.volumes,
+        volumes: product.volumes as unknown as Json,
         is_new: product.new,
         is_bestseller: product.bestseller,
-        volume_bonus: product.volumeBonus ?? null,
+        volume_bonus: (product.volumeBonus ?? null) as unknown as Json,
         is_available: product.available,
-      }).select().single();
+      }]).select().single();
       if (error) throw error;
       return mapDbProduct(data);
     },
@@ -122,10 +123,10 @@ export function useUpdateProduct() {
         longevity: product.longevity,
         projection: product.projection,
         occasions: product.occasions,
-        volumes: product.volumes,
+        volumes: product.volumes as unknown as Json,
         is_new: product.new,
         is_bestseller: product.bestseller,
-        volume_bonus: product.volumeBonus ?? null,
+        volume_bonus: (product.volumeBonus ?? null) as unknown as Json,
         is_available: product.available,
       }).eq('id', product.id);
       if (error) throw error;
