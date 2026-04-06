@@ -22,7 +22,7 @@ export default function AdminLayout() {
   }
 
   return (
-    <div className="flex min-h-[60vh]">
+    <div className="flex min-h-screen">
       {/* Sidebar */}
       <aside className="w-56 border-r border-border bg-card p-4 space-y-2 hidden md:block">
         <h2 className="font-heading text-lg font-semibold mb-4 px-2">Admin</h2>

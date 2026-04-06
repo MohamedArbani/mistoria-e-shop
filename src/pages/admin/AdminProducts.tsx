@@ -90,7 +90,7 @@ export default function AdminProducts() {
         toast({ title: 'Product created' });
       }
       setDialogOpen(false);
-    } catch (err: any) {
+    } catch (err) {
       toast({ title: 'Error', description: err.message, variant: 'destructive' });
     }
   };
@@ -100,7 +100,7 @@ export default function AdminProducts() {
     try {
       await deleteProduct.mutateAsync(id);
       toast({ title: 'Product deleted' });
-    } catch (err: any) {
+    } catch (err) {
       toast({ title: 'Error', description: err.message, variant: 'destructive' });
     }
   };

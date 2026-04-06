@@ -1,6 +1,26 @@
 import { Link } from 'react-router-dom';
 import { Logo } from '@/components/atoms/Logo';
 
+const categories = [{
+  name: 'Floral',
+  value: 'floral',
+}, {
+  name: 'Woody',
+  value: 'woody',
+}, {
+  name: 'Oriental',
+  value: 'oriental',
+}, {
+  name: 'Fresh',
+  value: 'fresh',
+}, {
+  name: 'Unisex',
+  value: 'unisex',
+}, {
+  name: 'Sweet',
+  value: 'sweet',
+}];
+
 export function Footer() {
   return (
     <footer className="border-t border-border bg-card py-12">
@@ -30,10 +50,13 @@ export function Footer() {
           <div>
             <h4 className="font-heading text-sm font-semibold mb-4 uppercase tracking-wider">Categories</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>Floral</li>
-              <li>Woody</li>
-              <li>Oriental</li>
-              <li>Fresh</li>
+              {categories.map(cat => (
+                <li key={cat.value}>
+                  <Link to={`/collections?category=${cat.value}`} className="hover:text-primary transition-colors">
+                    {cat.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

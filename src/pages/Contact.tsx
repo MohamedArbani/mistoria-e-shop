@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { MessageCircle, Mail, MapPin } from 'lucide-react';
+import { MessageCircle, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useSettings } from '@/hooks/useSettings';
 
@@ -49,7 +49,7 @@ export default function Contact() {
               </div>
               <h3 className="font-heading text-xl font-semibold">Email</h3>
               <p className="text-sm text-muted-foreground">{email || 'Not configured'}</p>
-              <a href={`mailto:${email}`}>
+              <a href={`mailto:${email}`} className='block'>
                 <Button variant="outline" className="font-body" disabled={!email}>
                   Send Email
                 </Button>

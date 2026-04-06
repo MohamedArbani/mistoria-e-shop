@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
+import { useQueryStates, parseAsString, parseAsStringLiteral } from 'nuqs';
 import { ProductCard } from '@/components/molecules/ProductCard';
 import { SearchBar } from '@/components/molecules/SearchBar';
 import { CATEGORIES, type Product, type ProductCategory } from '@/types/product';
@@ -9,14 +10,22 @@ interface ProductGridProps {
   showFilters?: boolean;
 }
 
+const categoryValues = ['all', ...CATEGORIES.map(c => c.value)] as const;
+
 export function ProductGrid({ products, showFilters = true }: ProductGridProps) {
-  const [search, setSearch] = useState('');
-  const [activeCategory, setActiveCategory] = useState<ProductCategory | 'all'>('all');
+  const [{ search, category }, setFilters] = useQueryStates({
+    search: parseAsString.withDefault(''),
+    category: parseAsStringLiteral(categoryValues).withDefault('all'),
+  });
+
+  const setSearch = (value: string) => setFilters({ search: value || null });
+  const setActiveCategory = (value: typeof categoryValues[number]) =>
+    setFilters({ category: value === 'all' ? null : value });
 
   const filtered = useMemo(() => {
     let result = products;
-    if (activeCategory !== 'all') {
-      result = result.filter(p => p.category === activeCategory);
+    if (category !== 'all') {
+      result = result.filter(p => p.category === category);
     }
     if (search.trim()) {
       const q = search.toLowerCase();
@@ -25,7 +34,7 @@ export function ProductGrid({ products, showFilters = true }: ProductGridProps) 
       );
     }
     return result;
-  }, [products, activeCategory, search]);
+  }, [products, category, search]);
 
   return (
     <div className="space-y-8">
@@ -37,7 +46,7 @@ export function ProductGrid({ products, showFilters = true }: ProductGridProps) 
               onClick={() => setActiveCategory('all')}
               className={cn(
                 'rounded-full px-4 py-1.5 text-sm font-body transition-all border',
-                activeCategory === 'all'
+                category === 'all'
                   ? 'bg-primary text-primary-foreground border-primary'
                   : 'bg-background text-muted-foreground border-border hover:border-primary/50'
               )}
@@ -50,7 +59,7 @@ export function ProductGrid({ products, showFilters = true }: ProductGridProps) 
                 onClick={() => setActiveCategory(cat.value)}
                 className={cn(
                   'rounded-full px-4 py-1.5 text-sm font-body transition-all border',
-                  activeCategory === cat.value
+                  category === cat.value
                     ? 'bg-primary text-primary-foreground border-primary'
                     : 'bg-background text-muted-foreground border-border hover:border-primary/50'
                 )}

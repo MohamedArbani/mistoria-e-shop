@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 
 export default function AdminLogin() {
-  const { user, isAdmin, isLoading, signIn, signUp } = useAuth();
+  const { user, isAdmin, isLoading, signIn, signUp, signOut } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [mode, setMode] = useState<'login' | 'signup'>('login');
@@ -32,6 +32,9 @@ export default function AdminLogin() {
         <div className="text-center space-y-4 max-w-sm">
           <h2 className="font-heading text-2xl font-bold">Access Denied</h2>
           <p className="text-muted-foreground">You don't have admin privileges.</p>
+          <Button variant="outline" onClick={() => signOut()} className="font-body">
+            Sign Out
+          </Button>
         </div>
       </div>
     );
