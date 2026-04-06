@@ -17,7 +17,7 @@ import { formatPrice } from '@/lib/format';
 const emptyProduct = (): Omit<Product, 'id'> => ({
   name: '', category: 'floral' as ProductCategory, price: 0, image: '', description: '', longDescription: '',
   notes: { top: [], middle: [], base: [] }, longevity: '', projection: '',
-  occasions: [], volumes: {}, new: false, bestseller: false, volumeBonus: undefined,
+  occasions: [], volumes: {}, new: false, bestseller: false, volumeBonus: undefined, available: true,
 });
 
 export default function AdminProducts() {
@@ -106,6 +106,17 @@ export default function AdminProducts() {
     }
   }, [deleteProduct, toast]);
 
+  const handleToggleAvailability = useCallback(async (product: Product) => {
+    try {
+      await updateProduct.mutateAsync({ ...product, available: !product.available });
+      toast({
+        title: product.available ? 'Marked as out of stock' : 'Marked as available',
+      });
+    } catch (err) {
+      toast({ title: 'Error', description: (err as Error).message, variant: 'destructive' });
+    }
+  }, [updateProduct, toast]);
+
   const updateNotes = (type: 'top' | 'middle' | 'base', value: string) => {
     setForm(prev => ({
       ...prev,
@@ -125,6 +136,7 @@ export default function AdminProducts() {
       <ProductsTable
         onEdit={openEdit}
         onDelete={handleDelete}
+        onToggleAvailability={handleToggleAvailability}
       />
 
       {/* Product Form Dialog */}
@@ -234,6 +246,15 @@ export default function AdminProducts() {
               <div className="flex items-center gap-2">
                 <Switch checked={form.bestseller} onCheckedChange={v => setForm(prev => ({ ...prev, bestseller: v }))} />
                 <Label>Bestseller</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  checked={form.available}
+                  onCheckedChange={v => setForm(prev => ({ ...prev, available: v }))}
+                />
+                <Label className={form.available ? 'text-emerald-600 dark:text-emerald-400' : 'text-destructive'}>
+                  {form.available ? 'Available' : 'Out of Stock'}
+                </Label>
               </div>
             </div>
 

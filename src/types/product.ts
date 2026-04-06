@@ -25,6 +25,8 @@ export interface Product {
   new?: boolean;
   bestseller?: boolean;
   volumeBonus?: VolumeBonus;
+  /** false = out of stock / unavailable — cannot be added to cart */
+  available: boolean;
 }
 
 export type ProductCategory = Product['category'];
@@ -69,5 +71,6 @@ export function mapDbProduct(row: any): Product {
     volumeBonus: row.volume_bonus
       ? (row.volume_bonus as VolumeBonus)
       : undefined,
+    available: row.is_available !== false, // default true if column missing
   };
 }

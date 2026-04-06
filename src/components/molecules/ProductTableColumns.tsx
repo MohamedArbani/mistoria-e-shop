@@ -1,5 +1,6 @@
+import * as React from 'react';
 import type { ColumnDef } from '@tanstack/react-table';
-import { Pencil, Trash2, Tag, Star, MoreHorizontal } from 'lucide-react';
+import { Pencil, Trash2, Tag, Star, MoreHorizontal, CheckCircle2, XCircle } from 'lucide-react';
 
 import { DataTableColumnHeader } from '@/components/data-table/data-table-column-header';
 import { CategoryBadge } from '@/components/atoms/CategoryBadge';
@@ -9,6 +10,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { CATEGORIES, type Product } from '@/types/product';
@@ -17,11 +19,13 @@ import { formatPrice, CURRENCY_SYMBOL } from '@/lib/format';
 interface ProductColumnsOptions {
   onEdit: (product: Product) => void;
   onDelete: (id: string) => void;
+  onToggleAvailability: (product: Product) => void;
 }
 
 export function getProductColumns({
   onEdit,
   onDelete,
+  onToggleAvailability,
 }: ProductColumnsOptions): ColumnDef<Product>[] {
   return [
     {
@@ -134,10 +138,30 @@ export function getProductColumns({
       },
     },
     {
+      id: 'available',
+      header: 'Status',
+      enableSorting: false,
+      cell: ({ row }) => {
+        const available = row.original.available;
+        return available ? (
+          <span className="inline-flex items-center gap-1 text-xs font-body font-medium text-emerald-600 dark:text-emerald-400">
+            <CheckCircle2 className="size-3.5" />
+            Available
+          </span>
+        ) : (
+          <span className="inline-flex text-nowrap items-center gap-1 text-xs font-body font-medium text-destructive">
+            <XCircle className="size-3.5" />
+            Out of Stock
+          </span>
+        );
+      },
+    },
+    {
       id: 'actions',
       header: '',
       enableSorting: false,
       enableHiding: false,
+      enablePinning: true,
       size: 60,
       cell: ({ row }) => {
         const product = row.original;
@@ -153,6 +177,23 @@ export function getProductColumns({
                 <Pencil className="size-4" />
                 Edit
               </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => onToggleAvailability(product)}
+                className="gap-2"
+              >
+                {product.available ? (
+                  <>
+                    <XCircle className="size-4 text-destructive" />
+                    Mark Out of Stock
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 className="size-4 text-emerald-600" />
+                    Mark Available
+                  </>
+                )}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => onDelete(product.id)}
                 className="gap-2 text-destructive focus:text-destructive"

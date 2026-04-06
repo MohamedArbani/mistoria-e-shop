@@ -4,9 +4,11 @@ import { ShoppingBag } from 'lucide-react';
 import type { Product } from '@/types/product';
 import { CategoryBadge } from '@/components/atoms/CategoryBadge';
 import { VolumeBonusBadge } from '@/components/atoms/VolumeBonusBadge';
+import { OutOfStockBadge } from '@/components/atoms/OutOfStockBadge';
 import { Badge } from '@/components/ui/badge';
 import { useCart } from '@/contexts/CartContext';
 import { formatPrice } from '@/lib/format';
+import { cn } from '@/lib/utils';
 
 interface ProductCardProps {
   product: Product;
@@ -21,6 +23,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!product.available) return;
     if (firstVolume) {
       addItem(product, firstVolume[0], firstVolume[1]);
     } else {
@@ -36,13 +39,19 @@ export function ProductCard({ product }: ProductCardProps) {
       transition={{ duration: 0.5 }}
     >
       <Link to={`/product/${product.id}`} className="group block">
-        <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-muted">
+        <div className={cn(
+          'relative aspect-[3/4] overflow-hidden rounded-lg bg-muted',
+          !product.available && 'opacity-70',
+        )}>
           {product.image ? (
             <img
               src={product.image}
               alt={product.name}
               loading="lazy"
-              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              className={cn(
+                'h-full w-full object-cover transition-transform duration-700 group-hover:scale-105',
+                !product.available && 'grayscale',
+              )}
             />
           ) : (
             <div className="flex h-full items-center justify-center text-muted-foreground font-heading text-lg">
@@ -50,25 +59,34 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
           )}
           <div className="absolute inset-0 bg-foreground/0 transition-colors group-hover:bg-foreground/10" />
-          
+
+          {/* Out of stock overlay */}
+          {!product.available && (
+            <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-[2px]">
+              <OutOfStockBadge className="text-sm px-4 py-2" />
+            </div>
+          )}
+
           {/* Badges */}
-          <div className="absolute left-3 top-3 flex flex-col gap-1">
+          <div className="absolute left-3 top-3 flex gap-1">
             {product.new && (
               <Badge className="bg-primary text-primary-foreground border-0 text-xs">NEW</Badge>
             )}
             {product.bestseller && (
-              <Badge className="bg-accent text-accent-foreground border-0 text-xs">BESTSELLER</Badge>
+              <Badge className="bg-secondary text-secondary-foreground border-0 text-xs">BESTSELLER</Badge>
             )}
           </div>
 
-          {/* Quick add */}
-          <button
-            onClick={handleQuickAdd}
-            className="absolute bottom-3 right-3 rounded-full bg-background/90 p-2.5 text-foreground opacity-0 shadow-lg backdrop-blur-sm transition-all group-hover:opacity-100 hover:bg-primary hover:text-primary-foreground"
-            aria-label="Quick add to cart"
-          >
-            <ShoppingBag className="h-4 w-4" />
-          </button>
+          {/* Quick add — hidden when out of stock */}
+          {product.available && (
+            <button
+              onClick={handleQuickAdd}
+              className="absolute bottom-3 right-3 rounded-full bg-background/90 p-2.5 text-foreground opacity-0 shadow-lg backdrop-blur-sm transition-all group-hover:opacity-100 hover:bg-primary hover:text-primary-foreground"
+              aria-label="Quick add to cart"
+            >
+              <ShoppingBag className="h-4 w-4" />
+            </button>
+          )}
         </div>
 
         <div className="mt-3 space-y-1">

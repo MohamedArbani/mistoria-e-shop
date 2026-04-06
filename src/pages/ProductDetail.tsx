@@ -6,6 +6,7 @@ import { useProduct } from '@/hooks/useProducts';
 import { VolumeSelector } from '@/components/atoms/VolumeSelector';
 import { CategoryBadge } from '@/components/atoms/CategoryBadge';
 import { VolumeBonusBadge } from '@/components/atoms/VolumeBonusBadge';
+import { OutOfStockBadge } from '@/components/atoms/OutOfStockBadge';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useCart } from '@/contexts/CartContext';
@@ -119,9 +120,24 @@ export default function ProductDetail() {
             </div>
           )}
 
-          <Button onClick={handleAddToCart} size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-body">
-            <ShoppingBag className="mr-2 h-4 w-4" /> Add to Cart
+          <Button
+            onClick={handleAddToCart}
+            size="lg"
+            disabled={!product.available}
+            className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-body disabled:opacity-60"
+          >
+            <ShoppingBag className="mr-2 h-4 w-4" />
+            {product.available ? 'Add to Cart' : 'Currently Unavailable'}
           </Button>
+
+          {!product.available && (
+            <div className="flex items-center gap-3 rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3">
+              <OutOfStockBadge />
+              <p className="text-sm text-muted-foreground font-body">
+                This product is currently out of stock. Check back later or browse our other fragrances.
+              </p>
+            </div>
+          )}
 
           {/* Notes */}
           <div className="grid grid-cols-3 gap-4 pt-4 border-t border-border">

@@ -13,9 +13,10 @@ import type { Product } from '@/types/product';
 interface ProductsTableProps {
   onEdit: (product: Product) => void;
   onDelete: (id: string) => void;
+  onToggleAvailability: (product: Product) => void;
 }
 
-export function ProductsTable({ onEdit, onDelete }: ProductsTableProps) {
+export function ProductsTable({ onEdit, onDelete, onToggleAvailability }: ProductsTableProps) {
   // Read the same URL params that useDataTable manages so we can drive the Supabase query
   const [page] = useQueryState('page', parseAsInteger.withDefault(1));
   const [perPage] = useQueryState('perPage', parseAsInteger.withDefault(10));
@@ -34,8 +35,8 @@ export function ProductsTable({ onEdit, onDelete }: ProductsTableProps) {
   const pageCount = data ? Math.ceil(data.count / perPage) : -1;
 
   const columns = React.useMemo(
-    () => getProductColumns({ onEdit, onDelete }),
-    [onEdit, onDelete],
+    () => getProductColumns({ onEdit, onDelete, onToggleAvailability }),
+    [onEdit, onDelete, onToggleAvailability],
   );
 
   const { table } = useDataTable({
@@ -43,7 +44,8 @@ export function ProductsTable({ onEdit, onDelete }: ProductsTableProps) {
     columns,
     pageCount,
     initialState: {
-      pagination: { pageSize: 10 },
+      pagination: { pageIndex: 0, pageSize: 10 },
+      columnPinning: { right: ["actions"] },
     },
   });
 

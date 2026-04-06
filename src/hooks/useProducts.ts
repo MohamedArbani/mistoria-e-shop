@@ -96,6 +96,7 @@ export function useCreateProduct() {
         is_new: product.new,
         is_bestseller: product.bestseller,
         volume_bonus: product.volumeBonus ?? null,
+        is_available: product.available,
       }).select().single();
       if (error) throw error;
       return mapDbProduct(data);
@@ -125,6 +126,7 @@ export function useUpdateProduct() {
         is_new: product.new,
         is_bestseller: product.bestseller,
         volume_bonus: product.volumeBonus ?? null,
+        is_available: product.available,
       }).eq('id', product.id);
       if (error) throw error;
     },
