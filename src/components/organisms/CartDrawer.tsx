@@ -24,7 +24,7 @@ export function CartDrawer() {
       i => `• ${i.product.name} (${i.volume}) x${i.quantity} — $${(i.price * i.quantity).toFixed(2)}`
     );
     const message = encodeURIComponent(
-      `🛍️ *MISTORIA Order*\n\n${lines.join('\n')}\n\n*Total: $${totalPrice.toFixed(2)}*\n\nPlease confirm my order!`
+      `*MISTORIA Order*\n\n${lines.join('\n')}\n\n*Total: $${totalPrice.toFixed(2)}*\n\nPlease confirm my order!`
     );
 
     window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');

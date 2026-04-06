@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
+import { useState, useCallback } from 'react';
+import { Plus } from 'lucide-react';
 import { useProducts, useCreateProduct, useUpdateProduct, useDeleteProduct } from '@/hooks/useProducts';
+import { ProductsTable } from '@/components/organisms/ProductsTable';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -32,17 +33,17 @@ export default function AdminProducts() {
   const [volumePriceInput, setVolumePriceInput] = useState('');
   const [uploading, setUploading] = useState(false);
 
-  const openCreate = () => {
+  const openCreate = useCallback(() => {
     setEditingId(null);
     setForm(emptyProduct());
     setDialogOpen(true);
-  };
+  }, []);
 
-  const openEdit = (p: Product) => {
+  const openEdit = useCallback((p: Product) => {
     setEditingId(p.id);
     setForm({ ...p });
     setDialogOpen(true);
-  };
+  }, []);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -91,19 +92,19 @@ export default function AdminProducts() {
       }
       setDialogOpen(false);
     } catch (err) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+      toast({ title: 'Error', description: (err as Error).message, variant: 'destructive' });
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = useCallback(async (id: string) => {
     if (!confirm('Delete this product?')) return;
     try {
       await deleteProduct.mutateAsync(id);
       toast({ title: 'Product deleted' });
     } catch (err) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+      toast({ title: 'Error', description: (err as Error).message, variant: 'destructive' });
     }
-  };
+  }, [deleteProduct, toast]);
 
   const updateNotes = (type: 'top' | 'middle' | 'base', value: string) => {
     setForm(prev => ({
@@ -121,33 +122,12 @@ export default function AdminProducts() {
         </Button>
       </div>
 
-      {isLoading ? (
-        <div className="animate-pulse text-muted-foreground">Loading products...</div>
-      ) : products.length === 0 ? (
-        <div className="text-center py-20 text-muted-foreground">No products yet. Add your first one!</div>
-      ) : (
-        <div className="space-y-3">
-          {products.map(p => (
-            <div key={p.id} className="flex items-center gap-4 rounded-lg border border-border bg-card p-4">
-              <div className="h-16 w-16 rounded-md bg-muted overflow-hidden flex-shrink-0">
-                {p.image ? (
-                  <img src={p.image} alt={p.name} className="h-full w-full object-cover" />
-                ) : (
-                  <div className="h-full w-full flex items-center justify-center text-xs text-muted-foreground">—</div>
-                )}
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-heading font-semibold truncate">{p.name}</h3>
-                <p className="text-sm text-muted-foreground capitalize">{p.category} — ${p.price.toFixed(2)}</p>
-              </div>
-              <div className="flex gap-2">
-                <Button variant="ghost" size="icon" onClick={() => openEdit(p)}><Pencil className="h-4 w-4" /></Button>
-                <Button variant="ghost" size="icon" onClick={() => handleDelete(p.id)} className="text-destructive"><Trash2 className="h-4 w-4" /></Button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      <ProductsTable
+        products={products}
+        isLoading={isLoading}
+        onEdit={openEdit}
+        onDelete={handleDelete}
+      />
 
       {/* Product Form Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
