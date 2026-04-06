@@ -123,10 +123,9 @@ export function useUpdateProduct() {
         longevity: product.longevity,
         projection: product.projection,
         occasions: product.occasions,
-        volumes: product.volumes,
+        volumes: product.volumes as unknown as Json,
         is_new: product.new,
         is_bestseller: product.bestseller,
-        volumes: product.volumes as unknown as Json,
         volume_bonus: (product.volumeBonus ?? null) as unknown as Json,
         is_available: product.available,
       }).eq('id', product.id);
