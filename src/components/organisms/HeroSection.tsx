@@ -70,7 +70,7 @@ export function HeroSection() {
                 </Button>
               </Link>
               <Link to="/about">
-                <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 font-body uppercase tracking-wider">
+                <Button size="lg" variant="outline" className="border-white/40 text-black hover:bg-white/60 dark:text-white dark:hover:bg-white/10 font-body uppercase tracking-wider">
                   Our Story
                 </Button>
               </Link>
