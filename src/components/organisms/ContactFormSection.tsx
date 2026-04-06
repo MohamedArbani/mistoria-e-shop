@@ -9,6 +9,8 @@ import { toast } from 'sonner';
 interface ContactFormSectionProps {
   whatsapp: string;
   email: string;
+  hoursWeekdays?: string;
+  hoursWeekend?: string;
 }
 
 interface FormState {
@@ -35,7 +37,7 @@ const fieldVariants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: 'easeOut' as const } },
 };
 
-export function ContactFormSection({ whatsapp, email }: ContactFormSectionProps) {
+export function ContactFormSection({ whatsapp, email, hoursWeekdays, hoursWeekend }: ContactFormSectionProps) {
   const [form, setForm] = useState<FormState>(initialForm);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -298,11 +300,11 @@ export function ContactFormSection({ whatsapp, email }: ContactFormSectionProps)
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-muted-foreground font-body">Mon – Sat</span>
-                    <span className="text-xs font-body font-medium">9 AM – 9 PM</span>
+                    <span className="text-xs font-body font-medium">{hoursWeekdays || '9 AM – 9 PM'}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-muted-foreground font-body">Sunday</span>
-                    <span className="text-xs font-body font-medium">10 AM – 6 PM</span>
+                    <span className="text-xs font-body font-medium">{hoursWeekend || '10 AM – 6 PM'}</span>
                   </div>
                 </div>
               </div>

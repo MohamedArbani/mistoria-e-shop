@@ -16,6 +16,8 @@ export default function AdminSettings() {
   const [email, setEmail] = useState('');
   const [storeName, setStoreName] = useState('');
   const [aboutText, setAboutText] = useState('');
+  const [hoursWeekdays, setHoursWeekdays] = useState('');
+  const [hoursWeekend, setHoursWeekend] = useState('');
 
   useEffect(() => {
     if (settings) {
@@ -23,6 +25,8 @@ export default function AdminSettings() {
       setEmail(settings.email || '');
       setStoreName(settings.store_name || '');
       setAboutText(settings.about_text || '');
+      setHoursWeekdays(settings.hours_weekdays || '');
+      setHoursWeekend(settings.hours_weekend || '');
     }
   }, [settings]);
 
@@ -33,9 +37,11 @@ export default function AdminSettings() {
         updateSetting.mutateAsync({ key: 'email', value: email }),
         updateSetting.mutateAsync({ key: 'store_name', value: storeName }),
         updateSetting.mutateAsync({ key: 'about_text', value: aboutText }),
+        updateSetting.mutateAsync({ key: 'hours_weekdays', value: hoursWeekdays }),
+        updateSetting.mutateAsync({ key: 'hours_weekend', value: hoursWeekend }),
       ]);
       toast({ title: 'Settings saved!' });
-    } catch (err: any) {
+    } catch (err) {
       toast({ title: 'Error', description: err.message, variant: 'destructive' });
     }
   };
@@ -66,6 +72,24 @@ export default function AdminSettings() {
         <div className="space-y-2">
           <Label>About Text</Label>
           <Textarea value={aboutText} onChange={e => setAboutText(e.target.value)} rows={4} />
+        </div>
+
+        <div className="space-y-2">
+          <Label>Business Hours — Mon to Sat</Label>
+          <Input
+            value={hoursWeekdays}
+            onChange={e => setHoursWeekdays(e.target.value)}
+            placeholder="9 AM – 9 PM"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label>Business Hours — Sunday</Label>
+          <Input
+            value={hoursWeekend}
+            onChange={e => setHoursWeekend(e.target.value)}
+            placeholder="10 AM – 6 PM"
+          />
         </div>
 
         <Button onClick={handleSave} className="bg-primary text-primary-foreground hover:bg-primary/90 font-body" disabled={updateSetting.isPending}>

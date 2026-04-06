@@ -7,6 +7,8 @@ export default function Contact() {
   const { data: settings } = useSettings();
   const whatsapp = settings?.whatsapp_number || '';
   const email = settings?.email || '';
+  const hoursWeekdays = settings?.hours_weekdays || '';
+  const hoursWeekend = settings?.hours_weekend || '';
 
   return (
     <div>
@@ -58,7 +60,7 @@ export default function Contact() {
       </section>
 
       {/* ── Form + Channels ──────────────────────────────── */}
-      <ContactFormSection whatsapp={whatsapp} email={email} />
+      <ContactFormSection whatsapp={whatsapp} email={email} hoursWeekdays={hoursWeekdays} hoursWeekend={hoursWeekend} />
     </div>
   );
 }
