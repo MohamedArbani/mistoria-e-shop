@@ -94,8 +94,8 @@ export function ProductCard({ product }: ProductCardProps) {
           <h3 className="font-heading text-lg font-medium text-foreground">{product.name}</h3>
           <p className="text-sm text-muted-foreground line-clamp-1">{product.description}</p>
           <p className="font-heading text-lg font-semibold text-primary">
+            {volumes.length > 1 && <span className="text-xs text-muted-foreground font-body mr-1">from</span>}
             {formatPrice(displayPrice)}
-            {volumes.length > 1 && <span className="text-xs text-muted-foreground font-body ml-1">from</span>}
           </p>
           {product.volumeBonus && (
             <VolumeBonusBadge volumeBonus={product.volumeBonus} />
