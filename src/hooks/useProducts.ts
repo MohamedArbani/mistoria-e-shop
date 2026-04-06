@@ -125,7 +125,8 @@ export function useUpdateProduct() {
         volumes: product.volumes,
         is_new: product.new,
         is_bestseller: product.bestseller,
-        volume_bonus: product.volumeBonus ?? null,
+        volumes: product.volumes as unknown as Json,
+        volume_bonus: (product.volumeBonus ?? null) as unknown as Json,
         is_available: product.available,
       }).eq('id', product.id);
       if (error) throw error;
