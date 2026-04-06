@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { Plus } from 'lucide-react';
-import { useProducts, useCreateProduct, useUpdateProduct, useDeleteProduct } from '@/hooks/useProducts';
+import { useCreateProduct, useUpdateProduct, useDeleteProduct } from '@/hooks/useProducts';
 import { ProductsTable } from '@/components/organisms/ProductsTable';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -10,17 +10,17 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { CATEGORIES, type Product, type ProductCategory } from '@/types/product';
+import { CATEGORIES, type Product, type ProductCategory, type VolumeBonus } from '@/types/product';
 import { supabase } from '@/integrations/supabase/client';
+import { formatPrice } from '@/lib/format';
 
 const emptyProduct = (): Omit<Product, 'id'> => ({
   name: '', category: 'floral' as ProductCategory, price: 0, image: '', description: '', longDescription: '',
   notes: { top: [], middle: [], base: [] }, longevity: '', projection: '',
-  occasions: [], volumes: {}, new: false, bestseller: false,
+  occasions: [], volumes: {}, new: false, bestseller: false, volumeBonus: undefined,
 });
 
 export default function AdminProducts() {
-  const { data: products = [], isLoading } = useProducts();
   const createProduct = useCreateProduct();
   const updateProduct = useUpdateProduct();
   const deleteProduct = useDeleteProduct();
@@ -123,8 +123,6 @@ export default function AdminProducts() {
       </div>
 
       <ProductsTable
-        products={products}
-        isLoading={isLoading}
         onEdit={openEdit}
         onDelete={handleDelete}
       />
@@ -221,7 +219,7 @@ export default function AdminProducts() {
               <div className="flex flex-wrap gap-2 mt-2">
                 {Object.entries(form.volumes).map(([vol, price]) => (
                   <span key={vol} className="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-1 text-sm">
-                    {vol}: ${Number(price).toFixed(2)}
+                    {vol}: {formatPrice(Number(price))}
                     <button onClick={() => removeVolume(vol)} className="text-destructive ml-1">&times;</button>
                   </span>
                 ))}
@@ -237,6 +235,53 @@ export default function AdminProducts() {
                 <Switch checked={form.bestseller} onCheckedChange={v => setForm(prev => ({ ...prev, bestseller: v }))} />
                 <Label>Bestseller</Label>
               </div>
+            </div>
+
+            {/* Volume Bonus */}
+            <div className="space-y-3 rounded-lg border border-border p-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label className="text-sm font-semibold">Volume Bonus Offer</Label>
+                  <p className="text-xs text-muted-foreground font-body">Reward customers who choose a higher volume with free extra ml.</p>
+                </div>
+                <Switch
+                  checked={!!form.volumeBonus}
+                  onCheckedChange={v => setForm(prev => ({
+                    ...prev,
+                    volumeBonus: v ? { threshold: 50, bonus: 10 } : undefined,
+                  }))}
+                />
+              </div>
+              {form.volumeBonus && (
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-xs">Min. volume to qualify (ml)</Label>
+                    <Input
+                      type="number"
+                      min={1}
+                      value={form.volumeBonus.threshold}
+                      onChange={e => setForm(prev => ({
+                        ...prev,
+                        volumeBonus: { ...(prev.volumeBonus as VolumeBonus), threshold: parseInt(e.target.value) || 0 },
+                      }))}
+                      placeholder="e.g. 50"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs">Free bonus (ml)</Label>
+                    <Input
+                      type="number"
+                      min={1}
+                      value={form.volumeBonus.bonus}
+                      onChange={e => setForm(prev => ({
+                        ...prev,
+                        volumeBonus: { ...(prev.volumeBonus as VolumeBonus), bonus: parseInt(e.target.value) || 0 },
+                      }))}
+                      placeholder="e.g. 10"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
             <Button onClick={handleSubmit} className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-body" disabled={createProduct.isPending || updateProduct.isPending}>

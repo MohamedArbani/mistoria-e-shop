@@ -1,6 +1,7 @@
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import type { CartItem as CartItemType } from '@/types/product';
 import { useCart } from '@/contexts/CartContext';
+import { formatPrice } from '@/lib/format';
 
 interface CartItemProps {
   item: CartItemType;
@@ -23,7 +24,7 @@ export function CartItemRow({ item }: CartItemProps) {
       <div className="flex-1 min-w-0">
         <h4 className="font-heading text-sm font-medium truncate">{item.product.name}</h4>
         <p className="text-xs text-muted-foreground">{item.volume}</p>
-        <p className="text-sm font-semibold text-primary">${item.price.toFixed(2)}</p>
+        <p className="text-sm font-semibold text-primary">{formatPrice(item.price)}</p>
         <div className="flex items-center gap-2 mt-1">
           <button
             onClick={() => updateQuantity(item.product.id, item.volume, item.quantity - 1)}

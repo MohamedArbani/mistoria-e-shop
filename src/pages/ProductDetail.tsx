@@ -5,9 +5,11 @@ import { motion } from 'framer-motion';
 import { useProduct } from '@/hooks/useProducts';
 import { VolumeSelector } from '@/components/atoms/VolumeSelector';
 import { CategoryBadge } from '@/components/atoms/CategoryBadge';
+import { VolumeBonusBadge } from '@/components/atoms/VolumeBonusBadge';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useCart } from '@/contexts/CartContext';
+import { formatPrice } from '@/lib/format';
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
@@ -45,6 +47,13 @@ export default function ProductDetail() {
   const volumeEntries = Object.entries(volumes);
   const currentVolume = selectedVolume || volumeEntries[0]?.[0] || 'default';
   const currentPrice = selectedPrice || volumeEntries[0]?.[1] || product.price;
+
+  // Determine if the currently selected volume qualifies for the bonus
+  const selectedMl = parseInt(currentVolume);
+  const bonusIsActive =
+    !!product.volumeBonus &&
+    !isNaN(selectedMl) &&
+    selectedMl >= product.volumeBonus.threshold;
 
   const handleAddToCart = () => {
     addItem(product, currentVolume, currentPrice);
@@ -85,7 +94,7 @@ export default function ProductDetail() {
               {product.bestseller && <Badge className="bg-accent text-accent-foreground border-0 text-xs">BESTSELLER</Badge>}
             </div>
             <h1 className="font-heading text-3xl md:text-4xl font-bold">{product.name}</h1>
-            <p className="font-heading text-2xl font-semibold text-primary">${currentPrice.toFixed(2)}</p>
+            <p className="font-heading text-2xl font-semibold text-primary">{formatPrice(currentPrice)}</p>
           </div>
 
           <p className="text-muted-foreground font-body leading-relaxed">{product.longDescription || product.description}</p>
@@ -99,6 +108,14 @@ export default function ProductDetail() {
                 selectedVolume={currentVolume}
                 onSelect={(v, p) => { setSelectedVolume(v); setSelectedPrice(p); }}
               />
+              {product.volumeBonus && (
+                <div className="pt-1">
+                  <VolumeBonusBadge
+                    volumeBonus={product.volumeBonus}
+                    active={bonusIsActive}
+                  />
+                </div>
+              )}
             </div>
           )}
 

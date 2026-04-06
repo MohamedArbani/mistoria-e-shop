@@ -1,3 +1,10 @@
+export interface VolumeBonus {
+  /** Minimum volume in ml to qualify for the bonus (e.g. 50 means "buy 50ml or more") */
+  threshold: number;
+  /** Extra ml the customer receives for free */
+  bonus: number;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -17,6 +24,7 @@ export interface Product {
   volumes: Record<string, number>; // e.g. { "50ml": 49.99, "100ml": 79.99 }
   new?: boolean;
   bestseller?: boolean;
+  volumeBonus?: VolumeBonus;
 }
 
 export type ProductCategory = Product['category'];
@@ -58,5 +66,8 @@ export function mapDbProduct(row: any): Product {
     volumes: (row.volumes as Record<string, number>) || {},
     new: row.is_new || false,
     bestseller: row.is_bestseller || false,
+    volumeBonus: row.volume_bonus
+      ? (row.volume_bonus as VolumeBonus)
+      : undefined,
   };
 }

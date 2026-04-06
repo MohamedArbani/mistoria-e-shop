@@ -1,6 +1,5 @@
-import * as React from 'react';
 import type { ColumnDef } from '@tanstack/react-table';
-import { Pencil, Trash2, Tag, Star, MoreVertical } from 'lucide-react';
+import { Pencil, Trash2, Tag, Star, MoreHorizontal } from 'lucide-react';
 
 import { DataTableColumnHeader } from '@/components/data-table/data-table-column-header';
 import { CategoryBadge } from '@/components/atoms/CategoryBadge';
@@ -13,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { CATEGORIES, type Product } from '@/types/product';
+import { formatPrice, CURRENCY_SYMBOL } from '@/lib/format';
 
 interface ProductColumnsOptions {
   onEdit: (product: Product) => void;
@@ -29,6 +29,7 @@ export function getProductColumns({
       header: '',
       enableSorting: false,
       enableHiding: false,
+      size: 60,
       cell: ({ row }) => {
         const product = row.original;
         return (
@@ -85,7 +86,7 @@ export function getProductColumns({
       enableColumnFilter: true,
       meta: {
         label: 'Category',
-        variant: 'select',
+        variant: 'multiSelect',
         options: CATEGORIES.map((c) => ({ label: c.label, value: c.value })),
       },
     },
@@ -97,14 +98,14 @@ export function getProductColumns({
       ),
       cell: ({ row }) => (
         <span className="font-body tabular-nums">
-          ${(row.getValue('price') as number).toFixed(2)}
+          {formatPrice(row.getValue('price') as number)}
         </span>
       ),
       enableSorting: true,
       meta: {
         label: 'Price',
         variant: 'number',
-        unit: '$',
+        unit: CURRENCY_SYMBOL,
       },
     },
     {
@@ -137,13 +138,14 @@ export function getProductColumns({
       header: '',
       enableSorting: false,
       enableHiding: false,
+      size: 60,
       cell: ({ row }) => {
         const product = row.original;
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="sm" className="font-body">
-                <MoreVertical className="size-4" />
+                <MoreHorizontal className="size-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">

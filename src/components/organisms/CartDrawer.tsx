@@ -5,6 +5,7 @@ import { useCart } from '@/contexts/CartContext';
 import { useSettings } from '@/hooks/useSettings';
 import { CartItemRow } from '@/components/molecules/CartItemRow';
 import { useToast } from '@/hooks/use-toast';
+import { formatPrice } from '@/lib/format';
 
 export function CartDrawer() {
   const { items, totalPrice, totalItems, isOpen, setIsOpen, clearCart } = useCart();
@@ -20,11 +21,16 @@ export function CartDrawer() {
       return;
     }
 
-    const lines = items.map(
-      i => `• ${i.product.name} (${i.volume}) x${i.quantity} — $${(i.price * i.quantity).toFixed(2)}`
-    );
+    const lines = items.map(i => {
+      const volumeMl = parseInt(i.volume);
+      const bonus = i.product.volumeBonus;
+      const bonusQualifies =
+        bonus && !isNaN(volumeMl) && volumeMl >= bonus.threshold;
+      const bonusNote = bonusQualifies ? ` _(+${bonus!.bonus}ml free bonus included)_` : '';
+      return `• ${i.product.name} (${i.volume}) x${i.quantity} — ${formatPrice(i.price * i.quantity)}${bonusNote}`;
+    });
     const message = encodeURIComponent(
-      `*MISTORIA Order*\n\n${lines.join('\n')}\n\n*Total: $${totalPrice.toFixed(2)}*\n\nPlease confirm my order!`
+      `*MISTORIA Order*\n\n${lines.join('\n')}\n\n*Total: ${formatPrice(totalPrice)}*\n\nPlease confirm my order!`
     );
 
     window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
@@ -54,7 +60,7 @@ export function CartDrawer() {
             <div className="border-t border-border pt-4 space-y-3">
               <div className="flex justify-between text-lg font-heading font-semibold">
                 <span>Total</span>
-                <span className="text-primary">${totalPrice.toFixed(2)}</span>
+                <span className="text-primary">{formatPrice(totalPrice)}</span>
               </div>
               <Button onClick={handleCheckout} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-body" size="lg">
                 <MessageCircle className="mr-2 h-4 w-4" />

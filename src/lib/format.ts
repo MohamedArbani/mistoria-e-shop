@@ -1,3 +1,9 @@
+export const CURRENCY_SYMBOL = "DH";
+
+export function formatPrice(amount: number): string {
+  return `${amount.toFixed(2)} ${CURRENCY_SYMBOL}`;
+}
+
 export function formatDate(
   date: Date | string | number | undefined,
   opts: Intl.DateTimeFormatOptions = {},

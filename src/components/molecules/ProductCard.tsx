@@ -1,11 +1,12 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShoppingBag } from 'lucide-react';
 import type { Product } from '@/types/product';
 import { CategoryBadge } from '@/components/atoms/CategoryBadge';
+import { VolumeBonusBadge } from '@/components/atoms/VolumeBonusBadge';
 import { Badge } from '@/components/ui/badge';
 import { useCart } from '@/contexts/CartContext';
+import { formatPrice } from '@/lib/format';
 
 interface ProductCardProps {
   product: Product;
@@ -75,9 +76,12 @@ export function ProductCard({ product }: ProductCardProps) {
           <h3 className="font-heading text-lg font-medium text-foreground">{product.name}</h3>
           <p className="text-sm text-muted-foreground line-clamp-1">{product.description}</p>
           <p className="font-heading text-lg font-semibold text-primary">
-            ${displayPrice.toFixed(2)}
+            {formatPrice(displayPrice)}
             {volumes.length > 1 && <span className="text-xs text-muted-foreground font-body ml-1">from</span>}
           </p>
+          {product.volumeBonus && (
+            <VolumeBonusBadge volumeBonus={product.volumeBonus} />
+          )}
         </div>
       </Link>
     </motion.div>
