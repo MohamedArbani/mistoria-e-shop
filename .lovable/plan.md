@@ -18,7 +18,7 @@ Inspired directly by the reference, the landing page will have **7 sections**:
 
 1. **Hero Section** — Split layout: left side has heading with gold italic accent ("Sculpting Dreams in a Bottle"), subtitle text, "View All Products" button, trust badges (100+ products, awards icons). Right side shows hero perfume image with floating stats (100k+ Trusted Clients, 80k+ Luxury Perfume, 10Y+ history). Animated counters using Framer Motion `useMotionValue` + `useTransform`. Decorative gold dotted line separator at bottom.
 
-2. **"Elevate Your Senses" Section** — Two-column: left has heading + "Explore More" button, right shows 4 featured product cards in a grid with discount/heart badges, prices with old/new styling. Uses `staggerChildren` animation.
+2. **"Elevate Your Senses" Section** — Two-column: left has heading + "Explore More" button, right shows 4 featured product cards in a grid with discount badges, prices with old/new styling. Uses `staggerChildren` animation.
 
 3. **"Journey of Elegance" Timeline Section** — Left side: heading + description + "View Full Details" CTA. Right side: a moody perfume image with golden overlay. Below: star rating (5.0), review count, and "10k+ Bought last month" stat. Framer Motion scroll-triggered reveal.
 
@@ -26,7 +26,7 @@ Inspired directly by the reference, the landing page will have **7 sections**:
 
 5. **"Limited Editions Unveiled" CTA** — Full-width dark section with large heading, "Discover the Collection" button, subtle gold accent line.
 
-6. **Featured Products Carousel** — Horizontal scroll/carousel of product cards with heart icons, ratings, "NEW" badges. Uses existing `ProductCard` but restyled with dark card backgrounds and gold accents. Optional swipe on mobile.
+6. **Featured Products Carousel** — Horizontal scroll/carousel of product cards, ratings, "NEW" badges. Uses existing `ProductCard` but restyled with dark card backgrounds and gold accents. Optional swipe on mobile.
 
 7. **Newsletter / Footer CTA** — Email subscription input + "Subscribe" button. Social media icons row. Links to Privacy, About, Contact.
 
@@ -45,7 +45,6 @@ Inspired directly by the reference, the landing page will have **7 sections**:
 
 ## ProductCard Restyling (ProductCard.tsx)
 - Dark card background in dark mode, rounded corners
-- Heart/wishlist icon top-right
 - Discount badge top-left (gold badge)
 - Price with strikethrough original price
 - Gold "add to cart" circle button

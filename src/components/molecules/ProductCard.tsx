@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShoppingBag, Heart } from 'lucide-react';
+import { ShoppingBag } from 'lucide-react';
 import type { Product } from '@/types/product';
 import { CategoryBadge } from '@/components/atoms/CategoryBadge';
 import { VolumeBonusBadge } from '@/components/atoms/VolumeBonusBadge';
@@ -79,15 +79,6 @@ export function ProductCard({ product }: ProductCardProps) {
               <Badge className="bg-secondary text-secondary-foreground border-0 text-xs font-body">BESTSELLER</Badge>
             )}
           </div>
-
-          {/* Heart icon top-right */}
-          <button
-            className="absolute top-3 right-3 rounded-full bg-background/80 backdrop-blur-sm p-2 text-muted-foreground opacity-0 group-hover:opacity-100 transition-all hover:text-primary"
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-            aria-label="Add to wishlist"
-          >
-            <Heart className="h-4 w-4" />
-          </button>
 
           {/* Quick add button */}
           {product.available && (

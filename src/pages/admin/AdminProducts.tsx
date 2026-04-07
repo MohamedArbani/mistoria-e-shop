@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { CATEGORIES, type Product, type ProductCategory, type VolumeBonus } from '@/types/product';
 import { supabase } from '@/integrations/supabase/client';
 import { formatPrice } from '@/lib/format';
@@ -24,7 +24,6 @@ export default function AdminProducts() {
   const createProduct = useCreateProduct();
   const updateProduct = useUpdateProduct();
   const deleteProduct = useDeleteProduct();
-  const { toast } = useToast();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -53,7 +52,7 @@ export default function AdminProducts() {
     const path = `${Date.now()}.${ext}`;
     const { error } = await supabase.storage.from('product-images').upload(path, file);
     if (error) {
-      toast({ title: 'Upload failed', description: error.message, variant: 'destructive' });
+      toast.error(`Upload failed: ${error.message}`);
       setUploading(false);
       return;
     }
@@ -79,20 +78,20 @@ export default function AdminProducts() {
 
   const handleSubmit = async () => {
     if (!form.name.trim()) {
-      toast({ title: 'Name required', variant: 'destructive' });
+      toast.error('Name required');
       return;
     }
     try {
       if (editingId) {
         await updateProduct.mutateAsync({ ...form, id: editingId } as Product);
-        toast({ title: 'Product updated' });
+        toast.success('Product updated');
       } else {
         await createProduct.mutateAsync(form);
-        toast({ title: 'Product created' });
+        toast.success('Product created');
       }
       setDialogOpen(false);
     } catch (err) {
-      toast({ title: 'Error', description: (err as Error).message, variant: 'destructive' });
+      toast.error((err as Error).message);
     }
   };
 
@@ -100,22 +99,20 @@ export default function AdminProducts() {
     if (!confirm('Delete this product?')) return;
     try {
       await deleteProduct.mutateAsync(id);
-      toast({ title: 'Product deleted' });
+      toast.success('Product deleted');
     } catch (err) {
-      toast({ title: 'Error', description: (err as Error).message, variant: 'destructive' });
+      toast.error((err as Error).message);
     }
-  }, [deleteProduct, toast]);
+  }, [deleteProduct]);
 
   const handleToggleAvailability = useCallback(async (product: Product) => {
     try {
       await updateProduct.mutateAsync({ ...product, available: !product.available });
-      toast({
-        title: product.available ? 'Marked as out of stock' : 'Marked as available',
-      });
+      toast.success(product.available ? 'Marked as out of stock' : 'Marked as available');
     } catch (err) {
-      toast({ title: 'Error', description: (err as Error).message, variant: 'destructive' });
+      toast.error((err as Error).message);
     }
-  }, [updateProduct, toast]);
+  }, [updateProduct]);
 
   const updateNotes = (type: 'top' | 'middle' | 'base', value: string) => {
     setForm(prev => ({

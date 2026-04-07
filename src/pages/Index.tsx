@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Sparkles, Shield, Heart } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { HeroSection } from '@/components/organisms/HeroSection';
 import { StatsCounter } from '@/components/organisms/StatsCounter';
 import { TimelineSection } from '@/components/organisms/TimelineSection';

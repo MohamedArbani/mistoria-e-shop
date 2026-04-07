@@ -5,12 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 export default function AdminSettings() {
   const { data: settings, isLoading } = useSettings();
   const updateSetting = useUpdateSetting();
-  const { toast } = useToast();
 
   const [whatsapp, setWhatsapp] = useState('');
   const [email, setEmail] = useState('');
@@ -40,9 +39,9 @@ export default function AdminSettings() {
         updateSetting.mutateAsync({ key: 'hours_weekdays', value: hoursWeekdays }),
         updateSetting.mutateAsync({ key: 'hours_weekend', value: hoursWeekend }),
       ]);
-      toast({ title: 'Settings saved!' });
+      toast.success('Settings saved!');
     } catch (err) {
-      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+      toast.error(err.message ?? 'Failed to save settings');
     }
   };
 

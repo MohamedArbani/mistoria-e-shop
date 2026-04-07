@@ -4,20 +4,19 @@ import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/CartContext';
 import { useSettings } from '@/hooks/useSettings';
 import { CartItemRow } from '@/components/molecules/CartItemRow';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { formatPrice } from '@/lib/format';
 
 export function CartDrawer() {
   const { items, totalPrice, totalItems, isOpen, setIsOpen, clearCart } = useCart();
   const { data: settings } = useSettings();
-  const { toast } = useToast();
 
   const handleCheckout = () => {
     if (items.length === 0) return;
 
     const whatsappNumber = settings?.whatsapp_number?.replace(/[^0-9]/g, '') || '';
     if (!whatsappNumber) {
-      toast({ title: 'Error', description: 'Store WhatsApp number not configured.', variant: 'destructive' });
+      toast.error('Store WhatsApp number not configured.');
       return;
     }
 
@@ -36,7 +35,7 @@ export function CartDrawer() {
     window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
     clearCart();
     setIsOpen(false);
-    toast({ title: 'Order sent!', description: 'Your order was sent via WhatsApp.' });
+    toast.success('Order sent — your order was sent via WhatsApp.');
   };
 
   return (

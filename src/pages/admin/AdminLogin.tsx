@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 export default function AdminLogin() {
   const { user, isAdmin, isLoading, signIn, signUp, signOut } = useAuth();
@@ -12,8 +12,6 @@ export default function AdminLogin() {
   const [password, setPassword] = useState('');
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [submitting, setSubmitting] = useState(false);
-  const { toast } = useToast();
-
   if (isLoading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
@@ -51,9 +49,9 @@ export default function AdminLogin() {
 
     setSubmitting(false);
     if (error) {
-      toast({ title: 'Error', description: error, variant: 'destructive' });
+      toast.error(error);
     } else if (mode === 'signup') {
-      toast({ title: 'Account created', description: 'Check your email to confirm, then log in.' });
+      toast.success('Account created — check your email to confirm, then log in.');
       setMode('login');
     }
   };

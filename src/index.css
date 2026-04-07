@@ -112,3 +112,10 @@
     background-color: hsl(var(--section-alt));
   }
 }
+
+/* Ensure Sonner toasts stay interactive above Radix modal overlays.
+   Radix Dialog sets pointer-events:none on body when open; this re-enables
+   the toaster so users can always dismiss toasts. */
+[data-sonner-toaster] {
+  pointer-events: auto !important;
+}

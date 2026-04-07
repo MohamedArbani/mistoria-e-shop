@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
 import type { CartItem, Product } from '@/types/product';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 interface CartContextType {
   items: CartItem[];
@@ -19,7 +19,6 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const { toast } = useToast();
 
   const addItem = useCallback((product: Product, volume: string, price: number) => {
     setItems(prev => {
@@ -33,7 +32,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
       return [...prev, { product, volume, price, quantity: 1 }];
     });
-    toast({ title: 'Added to cart', description: `${product.name} (${volume})` });
+    toast.success(`Added to cart — ${product.name} (${volume})`);
     setIsOpen(true);
   }, [toast]);
 
